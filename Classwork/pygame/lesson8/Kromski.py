@@ -75,7 +75,7 @@ while done:
        screen.fill(white)
        apple_green(x,y)
        for oun in ounad:
-              apple_red(oun[0],oun[1])
+           apple_red(oun[0],oun[1])
        for i in pygame.event.get():
               if i.type == pygame.QUIT:
                      done = False
