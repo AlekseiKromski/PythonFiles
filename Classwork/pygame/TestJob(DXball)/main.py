@@ -24,7 +24,7 @@ class player():
     def draw(self,screen):
         pygame.draw.rect(screen,self.color,(self.x,self.y,self.w,self.h))
 def bloks(x,y):
-       pygame.draw.circle(screen,red,[x,y],20,0)
+       pygame.draw.rect(screen,red,(x,y,100,20))
 pygame.init()
 size = [800,600]
 white = (255,255,255)
@@ -45,11 +45,18 @@ Ball.change_y = -1
 Ball.radius = 10
 Player1 = player()
 bloki = []
-raz = 2
+raz = 6
+bloky = 0
+blokx = 20
+spis_x = [20,180,340,500]
 for i in range(raz):
-    blokx = 10
-    bloky = 10
-    bloki.append([blokx,bloky])
+    for x in spis_x:
+        bloky = bloky + 30
+        if bloky == 180:
+            bloky = 30
+            blokx = x
+        bloki.append([blokx,bloky])
+print(bloki)
 while done:
     screen.fill(white)
     for b in bloki:
@@ -63,6 +70,14 @@ while done:
         Player1.x -= 3
     elif keys[pygame.K_RIGHT]:
         Player1.x +=3
+
+    #Поведение блока при попадании на него шарика
+    for b in bloki:
+        if abs(b[0] - Ball.x) < 100 and abs(b[1] - Ball.y) < 20:
+            bloki.remove(b)
+            #test
+            Ball.change_y = 1
+
 
     #поведение шарика при ударае об рамки
     if Ball.x > 790:
