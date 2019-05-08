@@ -33,6 +33,10 @@ def animation_hero():
             screen.blit(hero_default_right,(x,y))
     pygame.display.flip()
 pygame.init()
+path = os.path.dirname(__file__)
+pygame.mixer.music.load(os.path.join(path,'1.mp3')) #Загржает фоновую музыку
+pygame.mixer.music.play() #включаем фоновую музыку (постоянная)
+#pygame.mixer.music.play(-1) #зацикливание музыки
 size = [800,600]
 white = (255,255,255)
 red = (255,0,0)
