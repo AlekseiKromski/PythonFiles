@@ -31,11 +31,11 @@ class Rocket:
         #pygame.draw.polygon(self.surf, self.color, ([100,100], [50,200],[150,200]))
         pygame.draw.rect(self.surf, self.color, (self.x, self.y,Rocket.width_rocket, Rocket.height_rocket))
         if j == 1:
-            self.x += 3
+            self.x += 5
             if self.x > WIN_WIDTH:
                 self.x = 0
         else:
-            self.x -= 3
+            self.x -= 8
             if self.x < -Rocket.width_rocket:
                 # Поэтому перебрасываем ракету под нижнюю границу окна.
                 self.x = WIN_WIDTH
