@@ -56,6 +56,7 @@ for i in range(raz):
             bloky = 30
             blokx = x
         bloki.append([blokx,bloky])
+        #for tr
 print(bloki)
 while done:
     screen.fill(white)
