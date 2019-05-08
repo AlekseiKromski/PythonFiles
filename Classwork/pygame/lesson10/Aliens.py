@@ -11,7 +11,7 @@ class Sprite:
          self.y = ypos
       def render(self):
          screen.blit(self.bitmap, (self.x, self.y))
- 
+ #wad
 path = os.path.dirname(__file__)
 pygame.init()
 size = [640,480]
