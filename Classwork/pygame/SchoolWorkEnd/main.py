@@ -34,8 +34,12 @@ def animation_hero():
     pygame.display.flip()
 pygame.init()
 path = os.path.dirname(__file__)
-pygame.mixer.music.load(os.path.join(path,'1.mp3')) #Загржает фоновую музыку
-pygame.mixer.music.play() #включаем фоновую музыку (постоянная)
+#pygame.mixer.music.load(os.path.join(path,'A.mp3')) #Загржает фоновую музыку
+#pygame.mixer.music.play()
+
+sound = pygame.mixer.Sound(os.path.join(path,'B.wav'))
+
+#pygame.mixer.music.play() #включаем фоновую музыку (постоянная)
 #pygame.mixer.music.play(-1) #зацикливание музыки
 size = [800,600]
 white = (255,255,255)
@@ -46,6 +50,7 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode(size)
 path = os.path.dirname(__file__)
 bg = pygame.image.load(os.path.join(path,'img/bg.jpg'))
+
 ##import img##
 #right
 #создаем списки с картинками
@@ -98,6 +103,8 @@ while done:
         left = True
         right = False
         motion = 1 # определит куда будет смотреть персонаж при остановки (для функции animation_hero() )
+    elif keys[pygame.K_SPACE]:
+        sound.play()
     elif keys[pygame.K_RIGHT]:
         x += 3
         right = True
