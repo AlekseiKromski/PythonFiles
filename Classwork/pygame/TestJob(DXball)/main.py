@@ -45,10 +45,10 @@ Ball.change_y = -1
 Ball.radius = 10
 Player1 = player()
 bloki = []
-raz = 6
+raz = 5
 bloky = 0
 blokx = 20
-spis_x = [20,180,340,500]
+spis_x = [20,180,340,500,700]
 for i in range(raz):
     for x in spis_x:
         bloky = bloky + 30
