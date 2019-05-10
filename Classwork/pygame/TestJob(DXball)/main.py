@@ -14,7 +14,6 @@ class ball():
     def draw(self,screen):
         pygame.draw.circle(screen,self.color,(self.x,self.y),self.radius)
 class player():
-    global green
     def __init__(self,x = 400,y = 500, w = 100,h=10,color = [0,255,0]):
         self.x = x
         self.y = y
@@ -25,37 +24,46 @@ class player():
         pygame.draw.rect(screen,self.color,(self.x,self.y,self.w,self.h))
 def bloks(x,y):
        pygame.draw.rect(screen,red,(x,y,100,20))
+def Intersect(x1, x2, y1, y2, bx, by):
+    if (x1 > x2 - bx) and (x1 < x2 + bx) and (y1 > y2-by) and (y1 < y2+by):
+        return True
 pygame.init()
-size = [800,600]
+size = [900,600]
 white = (255,255,255)
 red = (255,0,0)
 green = (0,255,0)
 black = [0,0,0]
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode(size)
+pygame.display.set_caption('DXBall')
 screen.fill(white) #заливаем фон белым цветом
 path = os.path.dirname(__file__) #для картинок(это строчка нужна для редактора Atom)
+win_img = pygame.image.load(os.path.join(path, 'img/win.jpg'))
+lose_img = pygame.image.load(os.path.join(path, 'img/lose.jpg'))
 done = True
 f1 = pygame.font.Font(None, 36)
 Ball = ball()
-Ball.x = 400
+Ball.x = 350
 Ball.y = 400
 Ball.change_x = -2
 Ball.change_y = -1
 Ball.radius = 10
 Player1 = player()
 bloki = []
-raz = 5
+raz = 6
 bloky = 0
-blokx = 20
-spis_x = [20,180,340,500,700]
+blokx = 0
+win = 0
+motion = True
+spis_x = [100,300,500,700]
+wwin = False
+lose = False
 for i in range(raz):
     for x in spis_x:
         bloky = bloky + 30
-        if bloky == 180:
+        if bloky == 210:
             bloky = 30
-            blokx = x
-        bloki.append([blokx,bloky])
+        bloki.append([x,bloky])
         #for tr
 print(bloki)
 while done:
@@ -65,45 +73,52 @@ while done:
     for i in pygame.event.get():
         if i.type == pygame.QUIT:
             done = False
+
+    # Поведение шарика при соприкосновении с платформой
+    if abs(Ball.x > Player1.x - Player1.w) and abs(Ball.x < Player1.x + Player1.w) and abs(Ball.y > Player1.y-Player1.h) and abs(Ball.y < Player1.y+Player1.h):
+        Ball.change_y = -1
     # Управление платформой
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         Player1.x -= 3
     elif keys[pygame.K_RIGHT]:
         Player1.x +=3
-
     #Поведение блока при попадании на него шарика
     for b in bloki:
         if abs(b[0] - Ball.x) < 100 and abs(b[1] - Ball.y) < 20:
+            wwin = True
             bloki.remove(b)
-            #test
             Ball.change_y = 1
-
-
+    if wwin:
+        win+=1
+        wwin=False
     #поведение шарика при ударае об рамки
-    if Ball.x > 790:
+    if Ball.x > 890:
         Ball.change_x = -2
     elif Ball.x < 10:
         Ball.change_x = 2
     if Ball.y > 600: # Если y будет больше 600, то произойдет конец игры
-        screen.fill(black)
-        text1 = f1.render('конец игры ',1, white)
-        screen.blit(text1,[100,50])
+        lose = True
+        motion = False
     elif Ball.y < 10:
         Ball.change_y = 1
-    #поведение шарика при прекосновении об платформу
-    '''
-    НУЖНА КОНСУЛЬТАЦИЯ УЧИТЕЛЯ!!!
-    '''
-    #поведение платвормы при выходе за рамки
-    if Player1.x < -100:
-        Player1.x = 700
-    elif Player1.x > 790:
-        Player1.x = 10
 
-    Player1.draw(screen)
-    Ball.draw(screen)
-    Ball.move()
+    #поведение платвормы при выходе за рамки
+    if Player1.x <= -5:
+        Player1.x = 800
+    elif Player1.x > 800:
+        Player1.x = 0
+    #Поведение игры, если ты уничтожил все блоки
+    if win >= 12:
+        screen.blit(win_img,(0,0))
+        motion = False
+    if lose:
+        screen.blit(lose_img,(0,0))
+        motion = False
+    if motion: #Прекращение отображения после победы
+        Player1.draw(screen)
+        Ball.draw(screen)
+        Ball.move()
     clock.tick(120)
     pygame.display.flip()
 pygame.quit()
