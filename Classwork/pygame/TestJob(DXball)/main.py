@@ -58,6 +58,7 @@ motion = True
 spis_x = [100,300,500,700]
 wwin = False
 lose = False
+f1 = pygame.font.Font(None, 36)
 for i in range(raz):
     for x in spis_x:
         bloky = bloky + 30
@@ -112,13 +113,17 @@ while done:
     if win >= 12:
         screen.blit(win_img,(0,0))
         motion = False
+        screen.blit(text1, (350, 500))
     if lose:
         screen.blit(lose_img,(0,0))
         motion = False
+        screen.blit(text2, (350, 500))
     if motion: #Прекращение отображения после победы
         Player1.draw(screen)
         Ball.draw(screen)
         Ball.move()
+    text1 = f1.render('Количество очков = '+ str(win), 1, (0, 0, 0))
+    text2 = f1.render('Количество очков = '+ str(win), 1, (255, 255, 255))
     clock.tick(120)
     pygame.display.flip()
 pygame.quit()
