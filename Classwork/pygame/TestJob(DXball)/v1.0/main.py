@@ -1,20 +1,23 @@
 import pygame
-import random
-import os
-class ball():
+import os #Добавление этого модуля не обязательно, но он нужен для редактора кода Atom
+class ball(): #Класс шарика, по котору будет создоваться объект(Шарик)
     x = 0
     y = 0
-    change_x = 0
-    change_y = 0
+    change_x = 0 #Изменение движение шарика по оси x
+    change_y = 0 #Изменение движение шарика по оси y
     radius = 10
     color = [0,0,0]
-    def move(self):
+    def move(self): #Движение шарика
+        '''
+        В основном изменение change_x, change_y будут происходить при отталкивании об стенки рамки, блоков, платформы(игрока)
+        '''
         self.x += self.change_x
         self.y += self.change_y
-    def draw(self,screen):
+    def draw(self,screen): # Отрисовка шарика
         pygame.draw.circle(screen,self.color,(self.x,self.y),self.radius)
-class player():
-    def __init__(self,x = 400,y = 500, w = 100,h=10,color = [0,255,0]):
+
+class player(): #Класс игрока, на основе этого будет создан объект Player1
+    def __init__(self,x = 400,y = 500, w = 100,h=10,color = [0,255,0]): #стандартные значения для игрока (их можно поменять, при создании класса)
         self.x = x
         self.y = y
         self.w = w
@@ -22,30 +25,36 @@ class player():
         self.color = color
     def draw(self,screen):
         pygame.draw.rect(screen,self.color,(self.x,self.y,self.w,self.h))
-def bloks(x,y):
+
+def bloks(x,y): #создание блоков
        pygame.draw.rect(screen,red,(x,y,100,20))
-def Intersect(x1, x2, y1, y2, bx, by):
-    if (x1 > x2 - bx) and (x1 < x2 + bx) and (y1 > y2-by) and (y1 < y2+by):
-        return True
+
 pygame.init()
 size = [900,600]
 white = (255,255,255)
 red = (255,0,0)
 green = (0,255,0)
 black = [0,0,0]
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode(size)
-pygame.display.set_caption('DXBall')
+clock = pygame.time.Clock() #Определение кол.во кадров в секунду
+screen = pygame.display.set_mode(size)# Задаем размер окна
+pygame.display.set_caption('DXBall')# Задаем имя игре
 screen.fill(white) #заливаем фон белым цветом
-path = os.path.dirname(__file__) #для картинок(это строчка нужна для редактора Atom)
-pygame.mixer.music.load(os.path.join(path, 'sound/main.mp3')) #загружаем музыку
+path = os.path.dirname(__file__) #для картинок и музыки(это строчка нужна для редактора Atom)
+#==================================================================
+'''
+    Загружаем музыку и картинки
+'''
+pygame.mixer.music.load(os.path.join(path, 'sound/main.mp3'))
 lose_sound = pygame.mixer.Sound(os.path.join(path, 'sound/lose.wav'))
 win_sound = pygame.mixer.Sound(os.path.join(path, 'sound/win.wav'))
-pygame.mixer.music.play(1)
+pygame.mixer.music.play()# включаем проигрывание фоновой музыки
+#Картинки
 win_img = pygame.image.load(os.path.join(path, 'img/win.jpg'))
 lose_img = pygame.image.load(os.path.join(path, 'img/lose.jpg'))
-done = True
-f1 = pygame.font.Font(None, 36)
+#==================================================================
+'''
+    Создание объектов на основе классов
+'''
 Ball = ball()
 Ball.x = 350
 Ball.y = 400
@@ -53,29 +62,37 @@ Ball.change_x = -2
 Ball.change_y = -1
 Ball.radius = 10
 Player1 = player()
-bloki = []
-raz = 6
-bloky = 0
-blokx = 0
-win = 0
-motion = True
-spis_x = [100,300,500,700]
-wwin = False
-lose = False
+#==================================================================
+'''
+    Основные переменные для работы игры
+'''
+done = True
 f1 = pygame.font.Font(None, 36)
-win_sound_play = True
-lose_sound_play = True
-for i in range(raz):
+bloki = []
+raz = 6 # Количество раз, выполнения цыкла for (Для создания расплодения блоков)
+bloky = 0 #Стандартное расположение блоков (Нужно для цыкла)
+blokx = 0 #Стандартное расположение блоков (Нужно для цыкла)
+win = 0 #Количество осков
+motion = True #Нужно для того, чтобы после победы/проигрыша движение объектов прекратилось(оптимезация)
+spis_x = [100,300,500,700]
+wwin = False # Нужно для подсчета количество очков
+'''
+    Если бы мы расоположили эту переменную в главном цыкле и выполнилось бы условие (Шарика бы уничтожил блок),
+    то вместо начисления 1 еденицы, было бы начисление как 2 еденицы
+'''
+lose = False #Если шарик упадет в низ, то будет конец игры
+win_sound_play = True #Нужно для того, чтобы музыка проигралась один раз
+lose_sound_play = True #Нужно для того, чтобы музыка проигралась один раз
+for i in range(raz): #Создаем двоичный массив, в котором будет храниться расположение каждого блока
     for x in spis_x:
         bloky = bloky + 30
         if bloky == 210:
             bloky = 30
         bloki.append([x,bloky])
-        #for tr
 print(bloki)
 while done:
     screen.fill(white)
-    for b in bloki:
+    for b in bloki: # отрисоувываем расположение каждого блока
         bloks(b[0],b[1])
     for i in pygame.event.get():
         if i.type == pygame.QUIT:
@@ -115,15 +132,15 @@ while done:
     elif Player1.x > 800:
         Player1.x = 0
     #Поведение игры, если ты уничтожил все блоки
-    if win >= 1:
+    if win >= 12:
         screen.blit(win_img,(0,0))
-        pygame.mixer.music.pause() # Ставим музыку на фон
+        pygame.mixer.music.pause() # Ставим паузу на музыку(фон)
         if win_sound_play:
             win_sound.play()
             win_sound_play = False
         motion = False
         screen.blit(text1, (350, 500))
-
+    #Поведение игры, если ты уранил шарик
     if lose:
         screen.blit(lose_img,(0,0))
         pygame.mixer.music.pause()
@@ -136,6 +153,7 @@ while done:
         Player1.draw(screen)
         Ball.draw(screen)
         Ball.move()
+    # здесь отводиться рендер шаего текста при победе/проигреше
     text1 = f1.render('Количество очков = '+ str(win), 1, (0, 0, 0))
     text2 = f1.render('Количество очков = '+ str(win), 1, (255, 255, 255))
     clock.tick(120)
