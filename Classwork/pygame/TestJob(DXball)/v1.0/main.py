@@ -38,6 +38,10 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption('DXBall')
 screen.fill(white) #заливаем фон белым цветом
 path = os.path.dirname(__file__) #для картинок(это строчка нужна для редактора Atom)
+pygame.mixer.music.load(os.path.join(path, 'sound/main.mp3')) #загружаем музыку
+lose_sound = pygame.mixer.Sound(os.path.join(path, 'sound/lose.wav'))
+win_sound = pygame.mixer.Sound(os.path.join(path, 'sound/win.wav'))
+pygame.mixer.music.play(1)
 win_img = pygame.image.load(os.path.join(path, 'img/win.jpg'))
 lose_img = pygame.image.load(os.path.join(path, 'img/lose.jpg'))
 done = True
@@ -59,6 +63,8 @@ spis_x = [100,300,500,700]
 wwin = False
 lose = False
 f1 = pygame.font.Font(None, 36)
+win_sound_play = True
+lose_sound_play = True
 for i in range(raz):
     for x in spis_x:
         bloky = bloky + 30
@@ -74,7 +80,6 @@ while done:
     for i in pygame.event.get():
         if i.type == pygame.QUIT:
             done = False
-
     # Поведение шарика при соприкосновении с платформой
     if abs(Ball.x > Player1.x - Player1.w) and abs(Ball.x < Player1.x + Player1.w) and abs(Ball.y > Player1.y-Player1.h) and abs(Ball.y < Player1.y+Player1.h):
         Ball.change_y = -1
@@ -110,12 +115,21 @@ while done:
     elif Player1.x > 800:
         Player1.x = 0
     #Поведение игры, если ты уничтожил все блоки
-    if win >= 12:
+    if win >= 1:
         screen.blit(win_img,(0,0))
+        pygame.mixer.music.pause() # Ставим музыку на фон
+        if win_sound_play:
+            win_sound.play()
+            win_sound_play = False
         motion = False
         screen.blit(text1, (350, 500))
+
     if lose:
         screen.blit(lose_img,(0,0))
+        pygame.mixer.music.pause()
+        if lose_sound_play:
+            lose_sound.play()
+            lose_sound_play = False
         motion = False
         screen.blit(text2, (350, 500))
     if motion: #Прекращение отображения после победы
