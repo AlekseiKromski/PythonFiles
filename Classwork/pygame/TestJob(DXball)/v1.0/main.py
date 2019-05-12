@@ -81,7 +81,7 @@ Player1 = player()
     Основные переменные для работы игры
 '''
 done = True
-f1 = pygame.font.Font(None, 36)
+f1 = pygame.font.Font(os.path.join(path,'font/P.TTF'), 36)
 bloki = []
 raz = 6 # Количество раз, выполнения цыкла for (Для создания расплодения блоков)
 bloky = 0 #Стандартное расположение блоков (Нужно для цыкла)
@@ -169,8 +169,8 @@ while done:
         Player1.draw(screen,player_texture)
         Ball.move()
     # здесь отводиться рендер шаего текста при победе/проигреше
-    text1 = f1.render('Количество очков = '+ str(win), 1, (0, 0, 0))
-    text2 = f1.render('Количество очков = '+ str(win), 1, (255, 255, 255))
+    text1 = f1.render('Number of points = '+ str(win), 1, (0, 0, 0))
+    text2 = f1.render('Number of points = '+ str(win), 1, (255, 255, 255))
     clock.tick(120)
     pygame.display.flip()
 pygame.quit()
