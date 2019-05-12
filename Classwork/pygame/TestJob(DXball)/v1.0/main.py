@@ -32,13 +32,11 @@ def bloks(x,y,block_texture,screen): #создание блоков
        #pygame.draw.rect(screen,red,(x,y,100,20))
        screen.blit(block_texture,(x,y))
 
-
-def player_texture_draw(screen,x,y):
-    screen.blit(player_texture,(x,y))
-
 def ball_texture_draw(screen,x,y):
-    screen.blit(ball_texture,(x,y))
-
+    if ball_activated:
+        screen.blit(ball_texture_activated,(x,y))
+    else:
+        screen.blit(ball_texture,(x,y))
 pygame.init()
 size = [900,600]
 white = (255,255,255)
@@ -64,6 +62,7 @@ lose_img = pygame.image.load(os.path.join(path, 'img/lose.jpg'))
 player_texture = pygame.image.load(os.path.join(path, 'img/player_texture.png'))
 ball_texture = pygame.image.load(os.path.join(path, 'img/ball_texture.png'))
 block_texture = pygame.image.load(os.path.join(path, 'img/block_texture.png'))
+ball_texture_activated = pygame.image.load(os.path.join(path, 'img/ball_texture_activated.png'))
 bg = pygame.image.load(os.path.join(path, 'img/bg.jpg'))
 #==================================================================
 '''
@@ -97,6 +96,7 @@ wwin = False # Нужно для подсчета количество очко�
 lose = False #Если шарик упадет в низ, то будет конец игры
 win_sound_play = True #Нужно для того, чтобы музыка проигралась один раз
 lose_sound_play = True #Нужно для того, чтобы музыка проигралась один раз
+ball_activated = True
 for i in range(raz): #Создаем двоичный массив, в котором будет храниться расположение каждого блока
     for x in spis_x:
         bloky = bloky + 30
@@ -114,6 +114,7 @@ while done:
     # Поведение шарика при соприкосновении с платформой
     if abs(Ball.x > Player1.x - Player1.w) and abs(Ball.x < Player1.x + Player1.w) and abs(Ball.y > Player1.y-Player1.h) and abs(Ball.y < Player1.y+Player1.h):
         Ball.change_y = -1
+        ball_activated = True
     # Управление платформой
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
@@ -121,11 +122,15 @@ while done:
     elif keys[pygame.K_RIGHT]:
         Player1.x +=3
     #Поведение блока при попадании на него шарика
-    for b in bloki:
-        if abs(b[0] - Ball.x) < 100 and abs(b[1] - Ball.y) < 20:
-            wwin = True
-            bloki.remove(b)
-            Ball.change_y = 1
+    if ball_activated:
+        for b in bloki:
+            if abs(b[0] - Ball.x) < 100 and abs(b[1] - Ball.y) < 20:
+                bloki.remove(b)
+                wwin = True
+                ball_activated = False
+                Ball.change_y = 1
+    else:
+        pass
     if wwin:
         win+=1
         wwin=False
@@ -153,7 +158,7 @@ while done:
             win_sound.play()
             win_sound_play = False
         motion = False
-        screen.blit(text1, (350, 500))
+        screen.blit(text1, (180, 500))
     #Поведение игры, если ты уранил шарик
     if lose:
         screen.blit(lose_img,(0,0))
@@ -162,7 +167,7 @@ while done:
             lose_sound.play()
             lose_sound_play = False
         motion = False
-        screen.blit(text2, (350, 500))
+        screen.blit(text2, (170, 500))
     if motion: #Прекращение отображения после победы
         #player_texture_draw(screen,Player1.x,Player1.y) #Выступают заместо хитбоксов
         ball_texture_draw(screen,Ball.x,Ball.y) #Выступают заместо хитбоксов
@@ -173,4 +178,5 @@ while done:
     text2 = f1.render('Number of points = '+ str(win), 1, (255, 255, 255))
     clock.tick(120)
     pygame.display.flip()
+    print(ball_activated)
 pygame.quit()
