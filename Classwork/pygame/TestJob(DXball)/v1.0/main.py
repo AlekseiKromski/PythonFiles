@@ -17,17 +17,27 @@ class ball(): #Класс шарика, по котору будет создо�
         pygame.draw.circle(screen,self.color,(self.x,self.y),self.radius)
 
 class player(): #Класс игрока, на основе этого будет создан объект Player1
-    def __init__(self,x = 400,y = 500, w = 100,h=10,color = [0,255,0]): #стандартные значения для игрока (их можно поменять, при создании класса)
+    def __init__(self,x = 400,y = 500, w = 100,h=10,color = [0,0,0]): #стандартные значения для игрока (их можно поменять, при создании класса)
         self.x = x
         self.y = y
         self.w = w
         self.h = h
         self.color = color
-    def draw(self,screen):
-        pygame.draw.rect(screen,self.color,(self.x,self.y,self.w,self.h))
+    def draw(self,screen,player_texture):
+        #pygame.draw.rect(screen,self.color,(self.x,self.y,self.w,self.h)) #Нужно для тестов
+        screen.blit(player_texture,(self.x,self.y))
 
-def bloks(x,y): #создание блоков
-       pygame.draw.rect(screen,red,(x,y,100,20))
+
+def bloks(x,y,block_texture,screen): #создание блоков
+       #pygame.draw.rect(screen,red,(x,y,100,20))
+       screen.blit(block_texture,(x,y))
+
+
+def player_texture_draw(screen,x,y):
+    screen.blit(player_texture,(x,y))
+
+def ball_texture_draw(screen,x,y):
+    screen.blit(ball_texture,(x,y))
 
 pygame.init()
 size = [900,600]
@@ -38,7 +48,7 @@ black = [0,0,0]
 clock = pygame.time.Clock() #Определение кол.во кадров в секунду
 screen = pygame.display.set_mode(size)# Задаем размер окна
 pygame.display.set_caption('DXBall')# Задаем имя игре
-screen.fill(white) #заливаем фон белым цветом
+screen.fill(black) #заливаем фон черным цветом
 path = os.path.dirname(__file__) #для картинок и музыки(это строчка нужна для редактора Atom)
 #==================================================================
 '''
@@ -47,10 +57,14 @@ path = os.path.dirname(__file__) #для картинок и музыки(это
 pygame.mixer.music.load(os.path.join(path, 'sound/main.mp3'))
 lose_sound = pygame.mixer.Sound(os.path.join(path, 'sound/lose.wav'))
 win_sound = pygame.mixer.Sound(os.path.join(path, 'sound/win.wav'))
-pygame.mixer.music.play()# включаем проигрывание фоновой музыки
+pygame.mixer.music.play(-1)# включаем проигрывание фоновой музыки
 #Картинки
 win_img = pygame.image.load(os.path.join(path, 'img/win.jpg'))
 lose_img = pygame.image.load(os.path.join(path, 'img/lose.jpg'))
+player_texture = pygame.image.load(os.path.join(path, 'img/player_texture.png'))
+ball_texture = pygame.image.load(os.path.join(path, 'img/ball_texture.png'))
+block_texture = pygame.image.load(os.path.join(path, 'img/block_texture.png'))
+bg = pygame.image.load(os.path.join(path, 'img/bg.jpg'))
 #==================================================================
 '''
     Создание объектов на основе классов
@@ -91,9 +105,9 @@ for i in range(raz): #Создаем двоичный массив, в кото�
         bloki.append([x,bloky])
 print(bloki)
 while done:
-    screen.fill(white)
+    screen.blit(bg,(0,0))
     for b in bloki: # отрисоувываем расположение каждого блока
-        bloks(b[0],b[1])
+        bloks(b[0],b[1],block_texture,screen)
     for i in pygame.event.get():
         if i.type == pygame.QUIT:
             done = False
@@ -150,8 +164,9 @@ while done:
         motion = False
         screen.blit(text2, (350, 500))
     if motion: #Прекращение отображения после победы
-        Player1.draw(screen)
-        Ball.draw(screen)
+        #player_texture_draw(screen,Player1.x,Player1.y) #Выступают заместо хитбоксов
+        ball_texture_draw(screen,Ball.x,Ball.y) #Выступают заместо хитбоксов
+        Player1.draw(screen,player_texture)
         Ball.move()
     # здесь отводиться рендер шаего текста при победе/проигреше
     text1 = f1.render('Количество очков = '+ str(win), 1, (0, 0, 0))
