@@ -37,6 +37,38 @@ def ball_texture_draw(screen,x,y):
         screen.blit(ball_texture_activated,(x,y))
     else:
         screen.blit(ball_texture,(x,y))
+def play():
+    def bloks(x,y,block_texture,screen): #создание блоков
+           #pygame.draw.rect(screen,red,(x,y,100,20))
+           screen.blit(block_texture,(x,y))
+    global bloki
+    global block_texture
+    global screen
+    global motion
+    global bloky
+    global spis_x
+    global ball_activated
+    global win
+    global lose_sound_play
+    global win_sound_play
+    Ball.x = 350
+    Ball.y = 400
+    Ball.change_x = -2
+    Ball.change_y = -1
+    motion = True
+    ball_activated = True
+    win = 0
+    pygame.mixer.music.play()
+    lose_sound_play = True
+    win_sound_play = True
+    for i in range(raz): #Создаем двоичный массив, в котором будет храниться расположение каждого блока
+        for x in spis_x:
+            bloky = bloky + 30
+            if bloky == 210:
+                bloky = 30
+            bloki.append([x,bloky])
+    for b in bloki: # отрисоувываем расположение каждого блока
+        bloks(b[0],b[1],block_texture,screen)
 pygame.init()
 size = [900,600]
 white = (255,255,255)
@@ -115,35 +147,11 @@ while done:
         elif i.type == pygame.KEYDOWN:
             if i.key == pygame.K_SPACE:
                 start = True
+            elif i.key == pygame.K_l:
+                lose = True
+            elif i.key == pygame.K_w:
+                win = 13
     if start:
-        def play():
-            def bloks(x,y,block_texture,screen): #создание блоков
-                   #pygame.draw.rect(screen,red,(x,y,100,20))
-                   screen.blit(block_texture,(x,y))
-            global bloki
-            global block_texture
-            global screen
-            global motion
-            global bloky
-            global spis_x
-            global ball_activated
-            global win
-            Ball.x = 350
-            Ball.y = 400
-            Ball.change_x = -2
-            Ball.change_y = -1
-            motion = True
-            ball_activated = True
-            win = 0
-            pygame.mixer.music.play()
-            for i in range(raz): #Создаем двоичный массив, в котором будет храниться расположение каждого блока
-                for x in spis_x:
-                    bloky = bloky + 30
-                    if bloky == 210:
-                        bloky = 30
-                    bloki.append([x,bloky])
-            for b in bloki: # отрисоувываем расположение каждого блока
-                bloks(b[0],b[1],block_texture,screen)
         screen.blit(bg,(0,0))
         for b in bloki: # отрисоувываем расположение каждого блока
             bloks(b[0],b[1],block_texture,screen)
@@ -186,15 +194,17 @@ while done:
             Player1.x = 800
         elif Player1.x > 800:
             Player1.x = 0
+        text1 = f1.render('Number of points = '+ str(win), 1, (0, 0, 0))
+        text2 = f1.render('Number of points = '+ str(win), 1, (255, 255, 255))
         #Поведение игры, если ты уничтожил все блоки
-        if win >= 1:
+        if win >= 12:
             screen.blit(win_img,(0,0))
             pygame.mixer.music.pause() # Ставим паузу на музыку(фон)
             if win_sound_play:
                 win_sound.play()
                 win_sound_play = False
             motion = False
-            screen.blit(text1, (180, 500))
+            screen.blit(text1, (170, 375))
             if i.type == pygame.KEYDOWN:
                 if i.key == pygame.K_SPACE:
                     play()
@@ -210,7 +220,7 @@ while done:
             motion = False
             for b in bloki:
                 bloki.remove(b)
-            screen.blit(text2, (170, 500))
+            screen.blit(text2, (170, 375))
             if i.type == pygame.KEYDOWN:
                 if i.key == pygame.K_SPACE:
                     play()
@@ -222,8 +232,6 @@ while done:
             Player1.draw(screen,player_texture)
             Ball.move()
         # здесь отводиться рендер шаего текста при победе/проигреше
-        text1 = f1.render('Number of points = '+ str(win), 1, (0, 0, 0))
-        text2 = f1.render('Number of points = '+ str(win), 1, (255, 255, 255))
         clock.tick(120)
     pygame.display.flip()
     print(Ball.y)
